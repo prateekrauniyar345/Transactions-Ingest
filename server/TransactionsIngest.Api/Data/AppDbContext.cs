@@ -32,6 +32,18 @@ public class AppDbContext : DbContext
             .IsRequired()
             .HasMaxLength(19);
 
+        transaction.Property(t => t.CardNumber)
+            .IsRequired()
+            .HasMaxLength(19);
+
+        transaction.Property(t => t.LocationCode)
+            .IsRequired()
+            .HasMaxLength(19);
+
+        transaction.Property(t => t.ProductName)
+            .IsRequired()
+            .HasMaxLength(19);
+
         transaction.Property(t => t.Status)
             .HasConversion<string>()
             .IsRequired();

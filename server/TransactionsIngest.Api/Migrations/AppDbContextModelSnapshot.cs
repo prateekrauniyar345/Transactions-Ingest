@@ -26,6 +26,21 @@ namespace TransactionsIngest.Api.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("CardNumber")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LocationCode")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("SourceSystem")
                         .IsRequired()
                         .HasMaxLength(19)
