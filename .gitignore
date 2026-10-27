@@ -60,6 +60,10 @@ secrets.json
 appsettings.*.local.json
 
 
+# also ignore the coverage report
+/server/coverage-report
+
+
 
 
 

@@ -10,17 +10,20 @@ namespace TransactionsIngest.Api.Services;
 public class TransactionImportService : ITransactionImportService
 {
     private readonly AppDbContext _dbContext;
+    private readonly TimeProvider _timeProvider;
     private readonly IEnumerable<ITransactionSource> _sources;
     private readonly ILogger<TransactionImportService> _logger;
 
     public TransactionImportService(
         AppDbContext dbContext,
         IEnumerable<ITransactionSource> sources,
-        ILogger<TransactionImportService> logger)
+        ILogger<TransactionImportService> logger,
+        TimeProvider? timeProvider = null)
     {
         _dbContext = dbContext;
         _sources = sources;
         _logger = logger;
+        _timeProvider = timeProvider ?? TimeProvider.System;
     }
 
     public async Task<ImportResultDto> ImportAsync(
@@ -29,7 +32,7 @@ public class TransactionImportService : ITransactionImportService
     {
         var result = new ImportResultDto
         {
-            StartedAt = DateTime.UtcNow
+            StartedAt = _timeProvider.GetUtcNow().UtcDateTime
         };
 
         var batch = new ImportBatch
@@ -77,7 +80,7 @@ public class TransactionImportService : ITransactionImportService
             snapshots.Add((source.SourceSystem, transactions));
         }
 
-        var now = DateTime.UtcNow;
+        var now = _timeProvider.GetUtcNow().UtcDateTime;
 
         // Keep database updates and audit records together.
         await using var dbTransaction =
@@ -247,7 +250,7 @@ public class TransactionImportService : ITransactionImportService
             }
         }
 
-        result.CompletedAt = DateTime.UtcNow;
+        result.CompletedAt = _timeProvider.GetUtcNow().UtcDateTime;
         result.Status = "Completed";
 
         batch.CompletedAt = result.CompletedAt;
@@ -283,7 +286,7 @@ public class TransactionImportService : ITransactionImportService
             var batch = await _dbContext.ImportBatches.SingleAsync(
                 b => b.Id == batchId, timeout.Token);
             batch.Status = "Failed";
-            batch.CompletedAt = DateTime.UtcNow;
+            batch.CompletedAt = _timeProvider.GetUtcNow().UtcDateTime;
             batch.InsertedCount = 0;
             batch.UpdatedCount = 0;
             batch.RevokedCount = 0;

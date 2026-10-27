@@ -36,6 +36,7 @@ builder.Services.AddScoped<ITransactionSource, UptownSource>();
 builder.Services.AddScoped<ITransactionSource, DowntownSource>();
 builder.Services.AddScoped<ITransactionSource, OnlineSource>();
 
+builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
 builder.Services.AddScoped<ITransactionImportService, TransactionImportService>();
 
 var app = builder.Build();
