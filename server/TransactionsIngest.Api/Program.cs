@@ -34,6 +34,16 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+
+
+    // add the Swagger UI for API documentation
+    // url : http://localhost:5052/swagger/index.html
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint(
+            "/openapi/v1.json",
+            "Transactions Ingest API v1");
+    });
 }
 
 app.UseHttpsRedirection();
@@ -58,4 +68,4 @@ app.Run();
 
 
 // run 
-// dotnet run --project TransactionsIngest.Api --urls http://localhost:5000
+// dotnet run --project TransactionsIngest.Api --urls http://localhost:5052
