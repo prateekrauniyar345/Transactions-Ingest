@@ -1,0 +1,99 @@
+# ################################# 
+# CLIENT
+# #################################
+/dist
+/tmp
+/out-tsc
+/bazel-out
+
+# Angular client build and cache directories
+/client/dist
+/client/.angular/cache
+/client/node_modules
+/client/.sass-cache/
+/client/connect.lock
+/client/coverage
+/client/libpeerconnection.log
+/client/testem.log
+/client/typings
+/client/__screenshots__/
+/client/.history/*
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+*.tgz
+
+
+
+
+
+# ################################# 
+# SERVER
+# #################################
+# .NET server build output
+server/**/[Bb]in/
+server/**/[Oo]bj/
+server/**/[Dd]ebug/
+server/**/[Rr]elease/
+server/**/[Pp]ublish/
+server/**/TestResults/
+server/**/[Ll]og/
+*.dll
+*.exe
+*.pdb
+*.cache
+*.trx
+*.coverage
+*.coveragexml
+*.nupkg
+
+# .NET user-specific and secrets
+server/**/.vs/
+server/**/*.suo
+server/**/*.user
+server/**/*.userosscache
+server/**/*.sln.docstates
+server/**/*.userprefs
+secrets.json
+appsettings.*.local.json
+
+
+
+
+
+# ################################# 
+# SYSTEM
+# #################################
+# System files and environment variables
+.env
+.env.*
+!.env.example
+*.log
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/mcp.json
+
+
+# IDEs and editors
+.idea/
+*.swp
+*.swo
+*~
+.history/*
+*.launch
+*.sublime-workspace
+
+# OS files
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+Desktop.ini
+</content>
