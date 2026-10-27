@@ -4,6 +4,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
 using TransactionsIngest.Api.Data;
+using TransactionsIngest.Api.Interfaces;
+using TransactionsIngest.Api.Services;
+using TransactionsIngest.Api.Services.Sources;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +30,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(connectionString));
 
 
+
+// register the transaction sources
+builder.Services.AddScoped<ITransactionSource, UptownSource>();
+builder.Services.AddScoped<ITransactionSource, DowntownSource>();
+builder.Services.AddScoped<ITransactionSource, OnlineSource>();
+
+builder.Services.AddScoped<ITransactionImportService, TransactionImportService>();
 
 var app = builder.Build();
 
