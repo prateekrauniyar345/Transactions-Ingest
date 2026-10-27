@@ -9,10 +9,15 @@ public class AppDbContext : DbContext
         : base(options)
     {
     }
-    // get the DbSet for transactions and transaction audits
+    // get the DbSet for transactions 
     public DbSet<Transaction> Transactions => Set<Transaction>();
+
+    // get the DbSet for TransactionAudits
     public DbSet<TransactionAudit> TransactionAudits
     => Set<TransactionAudit>();
+
+    // get the DbSet for ImportBatches
+    public DbSet<ImportBatch> ImportBatches => Set<ImportBatch>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -67,5 +72,27 @@ public class AppDbContext : DbContext
             a.TransactionRecordId,
             a.ChangedAt
         });
+
+
+
+        // references the ImportBatch Table
+        var batch = modelBuilder.Entity<ImportBatch>();
+        batch.ToTable("ImportBatches");
+        // primary key for the ImportBatch table
+        batch.HasKey(b => b.Id);
+        batch.Property(b => b.StartedAt)
+            .IsRequired();
+        batch.Property(b => b.CompletedAt)
+            .IsRequired(false);
+        batch.Property(b => b.Status)
+            .IsRequired()
+            .HasMaxLength(20)
+            .HasDefaultValue("Running");
+        batch.Property(b => b.InsertedCount)
+            .HasDefaultValue(0);
+        batch.Property(b => b.UpdatedCount)
+            .HasDefaultValue(0);
+        batch.Property(b => b.RevokedCount)
+            .HasDefaultValue(0);
     }
 }
