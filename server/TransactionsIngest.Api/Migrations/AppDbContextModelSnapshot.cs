@@ -46,6 +46,11 @@ namespace TransactionsIngest.Api.Migrations
                         .HasColumnType("TEXT")
                         .HasDefaultValue("Running");
 
+                    b.Property<int>("UnchangedCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(0);
+
                     b.Property<int>("UpdatedCount")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")

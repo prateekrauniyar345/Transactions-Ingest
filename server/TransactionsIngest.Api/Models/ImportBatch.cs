@@ -16,4 +16,6 @@ public class ImportBatch
     public int UpdatedCount { get; set; }
 
     public int RevokedCount { get; set; }
+
+    public int UnchangedCount { get; set; }
 }

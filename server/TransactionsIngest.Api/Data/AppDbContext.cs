@@ -94,5 +94,7 @@ public class AppDbContext : DbContext
             .HasDefaultValue(0);
         batch.Property(b => b.RevokedCount)
             .HasDefaultValue(0);
+        batch.Property(b => b.UnchangedCount)
+            .HasDefaultValue(0);
     }
 }

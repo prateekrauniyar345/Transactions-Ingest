@@ -14,6 +14,15 @@ public class DowntownSource : ITransactionSource
         cancellationToken.ThrowIfCancellationRequested();
 
         // Fixed UTC timestamps to keep repeated snapshots identical.
+
+        // checking the failed import scenario
+        // this will throw the simulated source system failure exception.
+        // throw new InvalidOperationException(
+        //     "Simulated source system failure")
+        // ;
+        
+
+        // temporarily commented out the transaction list for the failure scenario.
         IReadOnlyList<TransactionSourceDto> transactions =
         [
             new TransactionSourceDto

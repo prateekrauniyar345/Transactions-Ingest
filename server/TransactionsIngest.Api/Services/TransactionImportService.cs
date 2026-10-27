@@ -32,7 +32,40 @@ public class TransactionImportService : ITransactionImportService
             StartedAt = DateTime.UtcNow
         };
 
-        // Fetch snapshots before changing the database.
+        var batch = new ImportBatch
+        {
+            StartedAt = result.StartedAt,
+            Status = "Running"
+        };
+
+        // Persist the execution before fetching sources so failures can be tracked.
+        _dbContext.ImportBatches.Add(batch);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        try
+        {
+            return await ReconcileAsync(result, batch, cancellationToken);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            _logger.LogInformation("Import batch {BatchId} was cancelled.", batch.Id);
+            await RecordFailureAsync(batch.Id);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Import batch {BatchId} failed.", batch.Id);
+            await RecordFailureAsync(batch.Id);
+            throw;
+        }
+    }
+
+    private async Task<ImportResultDto> ReconcileAsync(
+        ImportResultDto result,
+        ImportBatch batch,
+        CancellationToken cancellationToken)
+    {
+        // Fetch snapshots before changing transaction records.
         // A failed fetch must not be treated as an empty snapshot.
         var snapshots = new List<(
             string SourceSystem,
@@ -214,12 +247,19 @@ public class TransactionImportService : ITransactionImportService
             }
         }
 
-        await _dbContext.SaveChangesAsync(cancellationToken);
-
-        await dbTransaction.CommitAsync(cancellationToken);
-
         result.CompletedAt = DateTime.UtcNow;
         result.Status = "Completed";
+
+        batch.CompletedAt = result.CompletedAt;
+        batch.Status = result.Status;
+        batch.InsertedCount = result.InsertedCount;
+        batch.UpdatedCount = result.UpdatedCount;
+        batch.RevokedCount = result.RevokedCount;
+        batch.UnchangedCount = result.UnchangedCount;
+
+        // Commit reconciliation, audits, and the successful batch summary atomically.
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        await dbTransaction.CommitAsync(cancellationToken);
 
         _logger.LogInformation(
             "Import completed. Inserted: {Inserted}, Updated: {Updated}, Revoked: {Revoked}, Unchanged: {Unchanged}",
@@ -229,6 +269,32 @@ public class TransactionImportService : ITransactionImportService
             result.UnchangedCount);
 
         return result;
+    }
+
+    private async Task RecordFailureAsync(int batchId)
+    {
+        // ReconcileAsync's transaction has already been disposed and rolled back.
+        // Discard pending entity changes so they cannot be saved with the failure record.
+        _dbContext.ChangeTracker.Clear();
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+
+        try
+        {
+            var batch = await _dbContext.ImportBatches.SingleAsync(
+                b => b.Id == batchId, timeout.Token);
+            batch.Status = "Failed";
+            batch.CompletedAt = DateTime.UtcNow;
+            batch.InsertedCount = 0;
+            batch.UpdatedCount = 0;
+            batch.RevokedCount = 0;
+            batch.UnchangedCount = 0;
+            await _dbContext.SaveChangesAsync(timeout.Token);
+        }
+        catch (Exception ex)
+        {
+            // Preserve the original import exception if failure tracking also fails.
+            _logger.LogError(ex, "Could not record failure for import batch {BatchId}.", batchId);
+        }
     }
 
     private static string? FormatAuditValue<T>(T value) => value switch
