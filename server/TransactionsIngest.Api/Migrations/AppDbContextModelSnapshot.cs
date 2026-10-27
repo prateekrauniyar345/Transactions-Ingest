@@ -63,6 +63,57 @@ namespace TransactionsIngest.Api.Migrations
 
                     b.ToTable("Transactions", (string)null);
                 });
+
+            modelBuilder.Entity("TransactionsIngest.Api.Models.TransactionAudit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ChangeType")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ChangedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FieldName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NewValue")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("OldValue")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("TransactionRecordId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TransactionRecordId", "ChangedAt");
+
+                    b.ToTable("TransactionAudits", (string)null);
+                });
+
+            modelBuilder.Entity("TransactionsIngest.Api.Models.TransactionAudit", b =>
+                {
+                    b.HasOne("TransactionsIngest.Api.Models.Transaction", "Transaction")
+                        .WithMany("AuditHistory")
+                        .HasForeignKey("TransactionRecordId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Transaction");
+                });
+
+            modelBuilder.Entity("TransactionsIngest.Api.Models.Transaction", b =>
+                {
+                    b.Navigation("AuditHistory");
+                });
 #pragma warning restore 612, 618
         }
     }

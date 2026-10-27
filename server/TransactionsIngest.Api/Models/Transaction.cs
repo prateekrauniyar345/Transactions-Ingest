@@ -31,4 +31,9 @@ public class Transaction
 
     // new transaction status is active by default
     public TransactionStatus Status { get; set; } = TransactionStatus.Active;
+
+
+    // references the collection of audit records for this transaction
+    public ICollection<TransactionAudit> AuditHistory { get; set; }
+    = new List<TransactionAudit>();
 }
