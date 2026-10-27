@@ -97,3 +97,9 @@ appsettings.*.local.json
 Thumbs.db
 Desktop.ini
 </content>
+
+# Local SQLite database files
+*.db
+*.db-shm
+*.db-wal
+*.db-journal

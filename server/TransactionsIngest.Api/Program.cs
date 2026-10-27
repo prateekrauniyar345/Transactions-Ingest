@@ -1,3 +1,11 @@
+// server/TransactionsIngest.Api/Program.cs
+
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.Sqlite;
+using TransactionsIngest.Api.Data;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +13,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+
+// connection string for the databse
+var connectionString =
+    builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException(
+        "Connection string 'DefaultConnection' is missing.");
+
+// register the AppDbContext with the dependency 
+// injection container using the connection string
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite(connectionString));
+
+
 
 var app = builder.Build();
 
