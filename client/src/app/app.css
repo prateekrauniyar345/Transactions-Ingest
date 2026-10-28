@@ -71,7 +71,10 @@
   display: flex;
   gap: 32px;
 }
-.nav-inner button {
+.nav-inner a {
+  display: inline-block;
+  color: inherit;
+  text-decoration: none;
   border: 0;
   border-bottom: 5px solid transparent;
   background: transparent;
@@ -81,10 +84,10 @@
   font-weight: 700;
   cursor: pointer;
 }
-.nav-inner button.selected {
+.nav-inner a.selected {
   border-bottom-color: var(--gold);
 }
-.nav-inner button:hover {
+.nav-inner a:hover {
   background: #fafafa;
 }
 main {
@@ -201,30 +204,6 @@ tbody tr:hover {
   color: #555;
   padding-block: 16px;
 }
-.placeholder {
-  margin-top: 30px;
-  padding: 40px;
-  background: #f7f7f7;
-  border-top: 3px solid var(--gold);
-}
-.placeholder-mark {
-  display: inline-grid;
-  place-items: center;
-  background: #000;
-  color: var(--gold);
-  width: 40px;
-  height: 40px;
-  font-weight: 700;
-}
-.placeholder h2 {
-  font-size: 21px;
-  margin-block: 20px 10px;
-}
-.placeholder p {
-  color: #555;
-  line-height: 1.6;
-  margin: 0;
-}
 .site-footer {
   background: #000;
   color: #fff;
@@ -247,20 +226,6 @@ tbody tr:hover {
   color: #bbb;
   font-size: 18px;
   margin: 0 0 18px;
-}
-.footer-admin {
-  border: 0;
-  padding: 0;
-  font: inherit;
-  color: var(--gold);
-  background: none;
-  cursor: pointer;
-}
-.footer-admin span {
-  margin-left: 8px;
-}
-.footer-admin:hover {
-  text-decoration: underline;
 }
 .footer-bottom {
   display: flex;
@@ -337,8 +302,5 @@ a:focus-visible {
     align-items: flex-start;
     flex-direction: column;
     gap: 12px;
-  }
-  .placeholder {
-    padding: 26px;
   }
 }

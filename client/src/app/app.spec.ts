@@ -59,21 +59,4 @@ describe('App API connection', () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('[role="alert"]')).toBeNull();
   });
-  it('switches to Admin and returns to Transactions without refetching', () => {
-    const fixture = TestBed.createComponent(App);
-    fixture.detectChanges();
-    http.expectOne('/api/transactions').flush([]);
-    fixture.detectChanges();
-    const tabs = fixture.nativeElement.querySelectorAll('.nav-inner button');
-    tabs[1].click();
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('h1').textContent).toBe('Admin');
-    expect(fixture.nativeElement.textContent).toContain('Administrative tools will be available');
-    expect(tabs[1].getAttribute('aria-current')).toBe('page');
-    tabs[0].click();
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('h1').textContent).toBe('Transactions');
-    expect(fixture.nativeElement.textContent).toContain('No transactions yet');
-    http.expectNone('/api/transactions');
-  });
 });

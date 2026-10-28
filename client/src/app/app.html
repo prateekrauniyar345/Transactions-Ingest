@@ -13,85 +13,88 @@
   </div>
   <nav class="navigation" aria-label="Main navigation">
     <div class="site-width nav-inner">
-      <button type="button" (click)="activeTab.set('transactions')"
-        [class.selected]="activeTab() === 'transactions'"
-        [attr.aria-current]="activeTab() === 'transactions' ? 'page' : null">Transactions</button>
-      <button type="button" (click)="activeTab.set('admin')"
-        [class.selected]="activeTab() === 'admin'"
-        [attr.aria-current]="activeTab() === 'admin' ? 'page' : null">Admin</button>
+      <a class="selected" href="#main-content" aria-current="page">Transactions</a>
     </div>
   </nav>
 </header>
 
 <main id="main-content" class="site-width" tabindex="-1">
-  @if (activeTab() === 'transactions') {
-    <section aria-labelledby="transactions-heading">
-      <div class="content-heading">
-        <div>
-          <p class="eyebrow">TRANSACTIONS INGEST</p>
-          <h1 id="transactions-heading">Transactions</h1>
-          <p class="introduction">View imported card transactions from Store Uptown, Store Downtown, and Online.</p>
-        </div>
-        <button class="refresh-button" type="button" (click)="refresh()" [disabled]="loading()">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-            <path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.1 7a7 7 0 0 1 11.5-1L20 9M4 15l2.4 3A7 7 0 0 0 18 17"/>
-          </svg>
-          Refresh
-        </button>
+  <section aria-labelledby="transactions-heading">
+    <div class="content-heading">
+      <div>
+        <p class="eyebrow">TRANSACTIONS INGEST</p>
+        <h1 id="transactions-heading">Transactions</h1>
+        <p class="introduction">
+          View imported card transactions from Store Uptown, Store Downtown, and Online.
+        </p>
       </div>
-  @if (error()) {
-    <p role="alert">{{ error() }}</p>
-  }
-  @if (loading()) {
-    <p role="status">Loading transactions…</p>
-  } @else if (!error() && transactions().length === 0) {
-    <p>No transactions yet. Run an import in Swagger, then refresh.</p>
-  }
-
-  @if (transactions().length > 0) {
-    <div class="table-container">
-      <table>
-        <caption>Imported transactions ({{ transactions().length }}). Times shown in your local timezone ({{ localTimezone() }}).</caption>
-        <thead>
-          <tr>
-            <th scope="col">Source System</th>
-            <th scope="col">Transaction ID</th>
-            <th scope="col">Location Code</th>
-            <th scope="col">Product Name</th>
-            <th scope="col">Amount</th>
-            <th scope="col">Transaction Time (local)</th>
-            <th scope="col">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (transaction of transactions(); track transaction.id) {
-            <tr>
-              <td>{{ transaction.sourceSystem }}</td>
-              <td>{{ transaction.transactionId }}</td>
-              <td>{{ transaction.locationCode }}</td>
-              <td>{{ transaction.productName }}</td>
-              <td>{{ transaction.amount | currency:'USD' }}</td>
-              <td>{{ transaction.transactionTime | date:'yyyy-MM-dd HH:mm:ss' }}</td>
-              <td><span class="status" [class.revoked]="transaction.status === 'Revoked'">{{ transaction.status }}</span></td>
-            </tr>
-          }
-        </tbody>
-      </table>
+      <button class="refresh-button" type="button" (click)="refresh()" [disabled]="loading()">
+        <svg
+          viewBox="0 0 24 24"
+          width="18"
+          height="18"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          aria-hidden="true"
+        >
+          <path d="M20 7v5h-5M4 17v-5h5" />
+          <path d="M6.1 7a7 7 0 0 1 11.5-1L20 9M4 15l2.4 3A7 7 0 0 0 18 17" />
+        </svg>
+        Refresh
+      </button>
     </div>
-  }
+    @if (error()) {
+      <p role="alert">{{ error() }}</p>
+    }
+    @if (loading()) {
+      <p role="status">Loading transactions…</p>
+    } @else if (!error() && transactions().length === 0) {
+      <p>No transactions yet. Run an import in Swagger, then refresh.</p>
+    }
 
-    </section>
-  } @else {
-    <section class="admin-panel" aria-labelledby="admin-heading">
-      <p class="eyebrow">TRANSACTIONS INGEST</p>
-      <h1 id="admin-heading">Admin</h1>
-      <div class="placeholder">
-        <span class="placeholder-mark" aria-hidden="true">A</span>
-        <h2>Administration</h2>
-        <p>Administrative tools will be available here in a future update.</p>
+    @if (transactions().length > 0) {
+      <div class="table-container">
+        <table>
+          <caption>
+            Imported transactions ({{
+              transactions().length
+            }}). Times shown in your local timezone ({{
+              localTimezone()
+            }}).
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Source System</th>
+              <th scope="col">Transaction ID</th>
+              <th scope="col">Location Code</th>
+              <th scope="col">Product Name</th>
+              <th scope="col">Amount</th>
+              <th scope="col">Transaction Time (local)</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (transaction of transactions(); track transaction.id) {
+              <tr>
+                <td>{{ transaction.sourceSystem }}</td>
+                <td>{{ transaction.transactionId }}</td>
+                <td>{{ transaction.locationCode }}</td>
+                <td>{{ transaction.productName }}</td>
+                <td>{{ transaction.amount | currency: 'USD' }}</td>
+                <td>{{ transaction.transactionTime | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                <td>
+                  <span class="status" [class.revoked]="transaction.status === 'Revoked'">{{
+                    transaction.status
+                  }}</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
       </div>
-    </section>
-  }
+    }
+  </section>
 </main>
 
 <footer class="site-footer">
@@ -99,7 +102,6 @@
     <span class="wordmark footer-wordmark" aria-label="University of Iowa">IOWA</span>
     <p class="footer-department">Finance and Business Information Services</p>
     <p class="footer-unit">Business Services</p>
-    <button class="footer-admin" type="button" (click)="activeTab.set('admin')">Admin <span aria-hidden="true">→</span></button>
     <div class="footer-bottom">
       <p>© {{ currentYear }} The University of Iowa</p>
       <span>Transactions Ingest</span>

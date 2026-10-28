@@ -14,7 +14,6 @@ export class App implements OnInit {
   private readonly service = inject(TransactionService);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly destroyRef = inject(DestroyRef);
-  protected readonly activeTab = signal<'transactions' | 'admin'>('transactions');
   protected readonly localTimezone = signal('');
   protected readonly currentYear = new Date().getFullYear();
   protected readonly transactions = signal<Transaction[]>([]);
