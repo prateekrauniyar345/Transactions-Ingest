@@ -13,6 +13,14 @@ if ! docker compose version >/dev/null 2>&1; then
   echo "Docker Compose v2 is required. Install or update Docker Desktop." >&2
   exit 1
 fi
+compose_up_help="$(docker compose up --help)"
+case "$compose_up_help" in
+  *--watch*) ;;
+  *)
+    echo "Compose Watch is required. Update Docker Compose to v2.22 or newer." >&2
+    exit 1
+    ;;
+esac
 if ! docker info >/dev/null 2>&1; then
   echo "Docker is not running. Start Docker Desktop, then run ./run.sh again." >&2
   exit 1
@@ -34,6 +42,11 @@ echo "Backend:  http://localhost:${backend_address##*:}"
 echo "Swagger:  http://localhost:${backend_address##*:}/swagger"
 echo
 echo "Run an import in Swagger to populate the transaction table, then refresh the frontend."
-echo "Logs: docker compose logs -f"
-echo "Stop: docker compose down"
+echo "Watching source files: edits automatically rebuild and restart the affected service."
+echo "Wait for the rebuild to finish before importing again or refreshing the browser."
+echo "This terminal stays attached to logs. Press Ctrl+C to stop both services."
 echo "SQLite data is preserved in the transaction-data Docker volume."
+
+# Attach to the already-started services and enable automatic rebuilds.
+# exec forwards Ctrl+C directly to Compose, which stops the services on exit.
+exec docker compose -f compose.yaml up --watch

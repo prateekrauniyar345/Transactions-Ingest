@@ -15,6 +15,14 @@ services:
     volumes:
       - transaction-data:/data
     restart: unless-stopped
+    develop:
+      watch:
+        - action: rebuild
+          path: ./server
+          ignore:
+            - TransactionsIngest.Tests/
+            - dotnet-tools.json
+            - TransactionsIngest.slnx
 
   frontend:
     build:
@@ -27,6 +35,10 @@ services:
       backend:
         condition: service_healthy
     restart: unless-stopped
+    develop:
+      watch:
+        - action: rebuild
+          path: ./client
 
 volumes:
   transaction-data:

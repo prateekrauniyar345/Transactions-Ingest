@@ -302,7 +302,7 @@ Install and start Docker Desktop (or Docker Engine with Compose v2). From the re
 ./run.sh
 ```
 
-The script builds both images, starts the services, waits for their health checks, and prints the actual URLs. Defaults:
+The script builds both images, starts the services, waits for their health checks, and prints the actual URLs. It then keeps the terminal attached to logs and enables Compose Watch (requires Compose v2.22 or newer). Saving backend or frontend source files automatically rebuilds and restarts the affected container. Defaults:
 
 - Frontend: http://localhost:4200
 - Backend: http://localhost:5052
@@ -319,6 +319,10 @@ The equivalent Compose command is:
 ```bash
 docker compose up --build --detach --wait
 ```
+
+That command starts services without watching or keeping the terminal attached. Use `./run.sh` for the interactive watch workflow. Press `Ctrl+C` in its terminal to stop the services; the database volume is preserved. Changes to `compose.yaml` or this script require stopping and running the script again.
+
+To demonstrate an update, import once, edit an amount in a mock source, and save the file. Wait for the backend rebuild to complete, execute `POST /api/import` again, and refresh the frontend. Editing source code does not automatically trigger an import. Browser pages also need a refresh after frontend rebuilds. Build output, installed packages, test results, and SQLite files are excluded from watching through the Docker ignore files; backend test-only changes do not restart the API.
 
 The backend automatically applies committed migrations when started with the Docker configuration. Its database is stored in a named Docker volume, separate from the local `Data/transactions.db`. A fresh volume has no imported transactions: execute `POST /api/import` through Swagger, then refresh the frontend. Mock source timestamps are fixed, so their age affects the 24-hour revocation rule.
 
