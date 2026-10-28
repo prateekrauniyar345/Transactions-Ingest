@@ -284,7 +284,7 @@ Open http://localhost:4200. Stop the development server with `Ctrl+C`.
 | Build and tooling | `@angular/build`, `@angular/cli`, `@angular/compiler-cli`, `typescript`, `prettier` |
 | Testing and types | `vitest`, `jsdom`, `@types/express`, `@types/node` |
 
-There is no need to install these individually. Versions are declared in `package.json` and resolved in `package-lock.json`. The frontend currently displays the generated Angular starter page; the transaction table and API integration remain to be implemented.
+There is no need to install these individually. Versions are declared in `package.json` and resolved in `package-lock.json`. The frontend displays a basic transaction table loaded from `GET /api/transactions`. Its Refresh button reloads backend data. Keep both servers running. `client/proxy.conf.json` forwards `/api/**` requests from the Angular development server to `http://127.0.0.1:5052`, so browser requests use the frontend origin and do not require a CORS policy. Restart `npm start` after changing proxy settings. This proxy applies to `ng serve`; a deployed frontend will need its host to forward `/api` to the backend.
 
 To build the client or run its current tests, still from `client`:
 
