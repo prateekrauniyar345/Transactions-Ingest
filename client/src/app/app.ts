@@ -14,6 +14,9 @@ export class App implements OnInit {
   private readonly service = inject(TransactionService);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly destroyRef = inject(DestroyRef);
+  protected readonly activeTab = signal<'transactions' | 'admin'>('transactions');
+  protected readonly localTimezone = signal('');
+  protected readonly currentYear = new Date().getFullYear();
   protected readonly transactions = signal<Transaction[]>([]);
   protected readonly loading = signal(false);
   protected readonly error = signal('');
@@ -21,6 +24,7 @@ export class App implements OnInit {
   ngOnInit() {
     // Prerendering the app must not require a running backend.
     if (isPlatformBrowser(this.platformId)) {
+      this.localTimezone.set(Intl.DateTimeFormat().resolvedOptions().timeZone);
       this.refresh();
     }
   }

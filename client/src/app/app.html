@@ -1,12 +1,44 @@
-<main>
-  <header>
-    <div>
-      <h1>Transactions Ingest</h1>
-      <p>Imported transactions from Store Uptown, Store Downtown, and Online.</p>
-    </div>
-    <button type="button" (click)="refresh()" [disabled]="loading()">Refresh</button>
-  </header>
+<a class="skip-link" href="#main-content">Skip to main content</a>
 
+<header class="site-header">
+  <div class="brand-bar">
+    <div class="site-width brand-inner">
+      <a class="wordmark header-wordmark" href="/" aria-label="University of Iowa home">IOWA</a>
+      <span class="brand-unit">Business Services</span>
+    </div>
+  </div>
+  <div class="site-width department-header">
+    <p class="department-name">Finance and Business Information Services</p>
+    <span class="application-label">Transactions Ingest</span>
+  </div>
+  <nav class="navigation" aria-label="Main navigation">
+    <div class="site-width nav-inner">
+      <button type="button" (click)="activeTab.set('transactions')"
+        [class.selected]="activeTab() === 'transactions'"
+        [attr.aria-current]="activeTab() === 'transactions' ? 'page' : null">Transactions</button>
+      <button type="button" (click)="activeTab.set('admin')"
+        [class.selected]="activeTab() === 'admin'"
+        [attr.aria-current]="activeTab() === 'admin' ? 'page' : null">Admin</button>
+    </div>
+  </nav>
+</header>
+
+<main id="main-content" class="site-width" tabindex="-1">
+  @if (activeTab() === 'transactions') {
+    <section aria-labelledby="transactions-heading">
+      <div class="content-heading">
+        <div>
+          <p class="eyebrow">TRANSACTIONS INGEST</p>
+          <h1 id="transactions-heading">Transactions</h1>
+          <p class="introduction">View imported card transactions from Store Uptown, Store Downtown, and Online.</p>
+        </div>
+        <button class="refresh-button" type="button" (click)="refresh()" [disabled]="loading()">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.1 7a7 7 0 0 1 11.5-1L20 9M4 15l2.4 3A7 7 0 0 0 18 17"/>
+          </svg>
+          Refresh
+        </button>
+      </div>
   @if (error()) {
     <p role="alert">{{ error() }}</p>
   }
@@ -19,7 +51,7 @@
   @if (transactions().length > 0) {
     <div class="table-container">
       <table>
-        <caption>Imported transactions ({{ transactions().length }}). Times shown in UTC.</caption>
+        <caption>Imported transactions ({{ transactions().length }}). Times shown in your local timezone ({{ localTimezone() }}).</caption>
         <thead>
           <tr>
             <th scope="col">Source System</th>
@@ -27,7 +59,7 @@
             <th scope="col">Location Code</th>
             <th scope="col">Product Name</th>
             <th scope="col">Amount</th>
-            <th scope="col">Transaction Time (UTC)</th>
+            <th scope="col">Transaction Time (local)</th>
             <th scope="col">Status</th>
           </tr>
         </thead>
@@ -39,12 +71,38 @@
               <td>{{ transaction.locationCode }}</td>
               <td>{{ transaction.productName }}</td>
               <td>{{ transaction.amount | currency:'USD' }}</td>
-              <td>{{ transaction.transactionTime | date:'yyyy-MM-dd HH:mm:ss':'UTC' }}</td>
-              <td>{{ transaction.status }}</td>
+              <td>{{ transaction.transactionTime | date:'yyyy-MM-dd HH:mm:ss' }}</td>
+              <td><span class="status" [class.revoked]="transaction.status === 'Revoked'">{{ transaction.status }}</span></td>
             </tr>
           }
         </tbody>
       </table>
     </div>
   }
+
+    </section>
+  } @else {
+    <section class="admin-panel" aria-labelledby="admin-heading">
+      <p class="eyebrow">TRANSACTIONS INGEST</p>
+      <h1 id="admin-heading">Admin</h1>
+      <div class="placeholder">
+        <span class="placeholder-mark" aria-hidden="true">A</span>
+        <h2>Administration</h2>
+        <p>Administrative tools will be available here in a future update.</p>
+      </div>
+    </section>
+  }
 </main>
+
+<footer class="site-footer">
+  <div class="site-width footer-inner">
+    <span class="wordmark footer-wordmark" aria-label="University of Iowa">IOWA</span>
+    <p class="footer-department">Finance and Business Information Services</p>
+    <p class="footer-unit">Business Services</p>
+    <button class="footer-admin" type="button" (click)="activeTab.set('admin')">Admin <span aria-hidden="true">→</span></button>
+    <div class="footer-bottom">
+      <p>© {{ currentYear }} The University of Iowa</p>
+      <span>Transactions Ingest</span>
+    </div>
+  </div>
+</footer>
