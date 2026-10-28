@@ -294,3 +294,61 @@ npm test -- --watch=false
 ```
 
 
+## Run both applications with Docker
+
+Install and start Docker Desktop (or Docker Engine with Compose v2). From the repository root:
+
+```bash
+./run.sh
+```
+
+The script builds both images, starts the services, waits for their health checks, and prints the actual URLs. Defaults:
+
+- Frontend: http://localhost:4200
+- Backend: http://localhost:5052
+- Swagger: http://localhost:5052/swagger
+
+Stop any native development servers using those ports first. To choose different ports:
+
+```bash
+FRONTEND_PORT=4201 BACKEND_PORT=5053 ./run.sh
+```
+
+The equivalent Compose command is:
+
+```bash
+docker compose up --build --detach --wait
+```
+
+The backend automatically applies committed migrations when started with the Docker configuration. Its database is stored in a named Docker volume, separate from the local `Data/transactions.db`. A fresh volume has no imported transactions: execute `POST /api/import` through Swagger, then refresh the frontend. Mock source timestamps are fixed, so their age affects the 24-hour revocation rule.
+
+The frontend image serves the built Angular browser files through Nginx and forwards `/api` to the backend container. It does not use the Angular development server or run the generated Node SSR server. Compose uses the Development backend environment to make Swagger available for local evaluation.
+
+```bash
+docker compose logs -f
+docker compose down
+```
+
+Stopping with `down` preserves the database volume. `docker compose down --volumes` deletes that Docker database; use it only when intentionally resetting demo data.
+
+Individual images can also be built and run from the repository root:
+
+```bash
+docker build -t transactions-backend ./server
+docker build -t transactions-frontend ./client
+docker network create transactions-demo
+docker volume create transactions-demo-data
+
+docker run -d --name backend --network transactions-demo \
+  -p 127.0.0.1:5052:8080 \
+  -e ASPNETCORE_ENVIRONMENT=Development \
+  -v transactions-demo-data:/data transactions-backend
+
+docker run -d --name frontend --network transactions-demo \
+  -p 127.0.0.1:4200:8080 \
+  -e BACKEND_URL=http://backend:8080 transactions-frontend
+```
+
+These individual commands are an alternative to Compose; do not run both setups on the same ports. Compose is recommended because it also manages startup readiness. Container images restore their own build dependencies, so host .NET and Node installations are only needed for the native development steps below.
+
+

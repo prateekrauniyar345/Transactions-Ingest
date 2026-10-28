@@ -83,6 +83,20 @@ Tests, from the `server` folder:
 dotnet test TransactionsIngest.slnx
 ```
 
+## Run with Docker
+
+Start Docker Desktop, then run from the repository root:
+
+```bash
+./run.sh
+```
+
+The script starts both services and prints their URLs: frontend at http://localhost:4200, backend at http://localhost:5052, and Swagger at http://localhost:5052/swagger. SQLite data persists in a Docker volume. Stop with `docker compose down`.
+
+See [Project Setup](docs/ProjectSetup.md) for Docker details and native development instructions.
+
+
+
 ## Documentation
 
 - [Project setup](docs/ProjectSetup.md)

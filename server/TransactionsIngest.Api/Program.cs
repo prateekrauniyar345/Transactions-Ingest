@@ -41,6 +41,14 @@ builder.Services.AddScoped<ITransactionImportService, TransactionImportService>(
 
 var app = builder.Build();
 
+// Opt-in for the local Docker setup; normal CLI runs still use explicit migrations.
+if (app.Configuration.GetValue<bool>("Database:ApplyMigrationsOnStartup"))
+{
+    await using var scope = app.Services.CreateAsyncScope();
+    var database = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await database.Database.MigrateAsync();
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
