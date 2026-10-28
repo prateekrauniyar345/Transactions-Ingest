@@ -91,6 +91,16 @@ Start Docker Desktop, then run from the repository root:
 ./run.sh
 ```
 
+If the `./run.sh` was not executed then first provide it the executable permission by runing the command :
+```bash
+chmod +x run.sh
+```
+
+and then again run the command : 
+```bash
+./run.sh
+```
+
 The script starts both services and prints their URLs: frontend at http://localhost:4200, backend at http://localhost:5052, and Swagger at http://localhost:5052/swagger. It stays attached to logs and automatically rebuilds the affected service when source files change. SQLite data persists in a Docker volume. Press `Ctrl+C` to stop, or use `docker compose down` from another terminal.
 
 See [Project Setup](docs/ProjectSetup.md) for Docker details and native development instructions.
