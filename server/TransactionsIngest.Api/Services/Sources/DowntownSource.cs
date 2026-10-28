@@ -44,23 +44,23 @@ public class DowntownSource : ITransactionSource
                 CardNumber = "***3333",
                 LocationCode = "DOWNTOWN",
                 ProductName = "Laptop Stand",
-                // Amount = 39.99m,
-                Amount = 56.99m,
+                Amount = 39.99m,
+                // Amount = 56.99m,
                 TransactionTime = new DateTime(
                     2026, 10, 27, 10, 0, 0, DateTimeKind.Utc)
             }, 
-            new TransactionSourceDto
-            {
-                SourceSystem = SourceSystem,
-                TransactionId = 100099,
-                CardNumber = "***3355",
-                LocationCode = "DOWNTOWN",
-                ProductName = "Laptop Battery",
-                // Amount = 39.99m,
-                Amount = 130.99m,
-                TransactionTime = new DateTime(
-                    2026, 10, 28, 6, 0, 0, DateTimeKind.Utc)
-            }
+            // new TransactionSourceDto
+            // {
+            //     SourceSystem = SourceSystem,
+            //     TransactionId = 100099,
+            //     CardNumber = "***3355",
+            //     LocationCode = "DOWNTOWN",
+            //     ProductName = "Laptop Battery",
+            //     // Amount = 39.99m,
+            //     Amount = 130.99m,
+            //     TransactionTime = new DateTime(
+            //         2026, 10, 28, 6, 0, 0, DateTimeKind.Utc)
+            // }
         ];
 
         return Task.FromResult(transactions);
