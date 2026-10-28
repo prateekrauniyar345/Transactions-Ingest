@@ -36,7 +36,7 @@ cd server
 dotnet restore
 dotnet tool restore
 dotnet tool run dotnet-ef database update --project TransactionsIngest.Api
-dotnet run --project TransactionsIngest.Api --urls http://localhost:5000
+dotnet run --project TransactionsIngest.Api --urls http://localhost:5052
 ```
 
 Frontend, in a separate terminal from the project root:
@@ -47,5 +47,10 @@ npm ci
 npm start
 ```
 
-API: http://localhost:5000  
+API: http://localhost:5052
 Frontend: http://localhost:4200
+
+## AI usage disclosure
+
+I used VSCode GitHub Copilot to assisted me with design, implementation, debugging, testing, and documentation. 
+See the [AI usage disclosure](docs/AIUsageDisclosure.md) and [prompt and design discussion log](docs/AIPrompts.md) for details, conventions, and changes made to generated output.
